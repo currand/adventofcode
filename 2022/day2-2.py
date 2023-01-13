@@ -4,17 +4,6 @@ from utils.utils import get_input
 lines = get_input('day2.txt')
 games = [tuple(x.split(' ')) for x in lines]
 
-winners = {
-    ("A", "X"): "draw",
-    ("A", "Y"): "win",
-    ("A", "Z"): "lose",
-    ("B", "X"): "lose",
-    ("B", "Y"): "draw",
-    ("B", "Z"): "win",
-    ("C", "X"): "win",
-    ("C", "Y"): "lose",
-    ("C", "Z"): "draw",
-}
 
 class Scores(Enum):
     ROCK = 1 # A, X
@@ -23,25 +12,25 @@ class Scores(Enum):
     A = 1
     B = 2
     C = 3
-    X = 1
-    Y = 2
-    Z = 3
-    LOST = 0
-    DRAW = 3
-    WON = 6
+    X = 0
+    Y = 3
+    Z = 6
+
+winners = {
+    ("A", "X"): Scores.SCISSORS,
+    ("A", "Y"): Scores.ROCK,
+    ("A", "Z"): Scores.PAPER,
+    ("B", "X"): Scores.ROCK,
+    ("B", "Y"): Scores.PAPER,
+    ("B", "Z"): Scores.SCISSORS,
+    ("C", "X"): Scores.PAPER,
+    ("C", "Y"): Scores.SCISSORS,
+    ("C", "Z"): Scores.ROCK,
+}
 
 total = 0
 for game in games:
-    score = 0
-    if winners[game] == 'win':
-        score = Scores.WON.value + Scores[game[1]].value
-    elif winners[game] == 'lose':
-        score = Scores.LOST.value + Scores[game[1]].value
-    elif winners[game] == 'draw':
-        score = Scores.DRAW.value + Scores[game[1]].value
-    else:
-        print("Not found")
-    
+    score = winners[game].value + Scores[game[1]].value    
     total += score
     
 print(total)
