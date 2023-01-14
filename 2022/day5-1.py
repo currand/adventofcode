@@ -4,7 +4,7 @@ def get_input(filename, no_strip=True):
     with open(filename, 'r') as fh:
         return fh.readlines()
 
-lines = get_input('test5.txt')
+lines = get_input('day5.txt')
 stacks = []
 for i,line in enumerate(lines):
     if not line.startswith(' 1'):
@@ -21,16 +21,17 @@ for stack in stacks:
             column.append(item)
     columns.append(column)
 
-[item for stack in stacks for item in stack if item != '   ']
-
 moves = []
 for line in lines[i+2:]:
     matches = re.match(r'move (\d+) from (\d+) to (\d+)', line)
     moves.append((int(matches.group(1)), int(matches.group(2)), int(matches.group(3))))
 
 for move in moves:
-    to_move = stacks[move[1]][:move[0]]
-    pass
+    to_move = columns[move[1]-1][:move[0]][::-1]
+    del columns[move[1]-1][:move[0]]
+    columns[move[2]-1] = to_move + columns[move[2]-1]
 
+out = [x[0] for x in columns]
+out = ''.join(out).replace('[','').replace(']', '')
 
-pass
+print(out)
