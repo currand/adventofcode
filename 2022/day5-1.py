@@ -1,6 +1,6 @@
 import re
 
-def get_input(filename):
+def get_input(filename, no_strip=True):
     with open(filename, 'r') as fh:
         return fh.readlines()
 
@@ -12,9 +12,16 @@ for i,line in enumerate(lines):
     else:
         break
 
+columns = []
 stacks = list(map(list, zip(*stacks)))
-# need to get rid of '   ' at top of lists
+for stack in stacks:
+    column = []
+    for item in stack:
+        if item != '   ':
+            column.append(item)
+    columns.append(column)
 
+[item for stack in stacks for item in stack if item != '   ']
 
 moves = []
 for line in lines[i+2:]:
