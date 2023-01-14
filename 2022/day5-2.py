@@ -1,10 +1,8 @@
+
 import re
+from utils.utils import get_input
 
-def get_input(filename, no_strip=True):
-    with open(filename, 'r') as fh:
-        return fh.readlines()
-
-lines = get_input('day5.txt')
+lines = get_input('day5.txt', no_strip=True)
 stacks = []
 for i,line in enumerate(lines):
     if not line.startswith(' 1'):
