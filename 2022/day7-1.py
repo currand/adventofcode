@@ -4,27 +4,36 @@ from utils.utils import get_input
 
 class Node():
 
-    def __init__(self, name, parent, size=None) -> None:
+    def __init__(self, name: str, parent: Node | None, size: int | None = None) -> None:
         self.name = name
         self.parent = parent
         self.children = {}
         self.files = {}
         self.size = 0
+        self.total_size = 0
     
     def add_file(self, name, size) -> None:
         self.files[name] = int(size)
         self._update_size()
     
     def _update_size(self) -> None:
-        self.size = sum(self.files.values())
+        self.size = sum([n for n in self.files.values()])
+        self.total_size = self._calc_size(self.size)
+
+    def _calc_size(self, size):
+        for node in self.children.values():
+            if node == None:
+                return
+            self.total_size = self.size
+            return self._calc_size(node, total_size)
 
 class Filesystem():
 
     def __init__(self) -> None:
-        self.root = Node('/', None)
-        self.curr_dir = self.root
+        self.root: Node = Node('/', None)
+        self.curr_dir: Node = self.root
     
-    def __repr__(self) -> str:
+    def __repr__(self) -> None:
         print(self.curr_dir[name])
 
     def add_dir(self, name) -> None:
@@ -73,8 +82,6 @@ if __name__ == '__main__':
         else:
             pass
 
-fs.curr_dir = fs.root
 
-#need to go recursively through and get file sizes
 
 pass
