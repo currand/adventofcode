@@ -1,5 +1,6 @@
 from enum import Enum
 from utils.utils import get_input
+from anytree import Node, RenderTree
 
 lines = get_input('day2.txt')
 games = [tuple(x.split(' ')) for x in lines]
