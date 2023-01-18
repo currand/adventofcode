@@ -1,6 +1,8 @@
 from __future__ import annotations
 import re
 from utils.utils import get_input
+from dataclasses import dataclass
+
 
 class Node():
 
@@ -18,14 +20,7 @@ class Node():
     
     def _update_size(self) -> None:
         self.size = sum([n for n in self.files.values()])
-        self.total_size = self._calc_size(self.size)
 
-    def _calc_size(self, size):
-        for node in self.children.values():
-            if node == None:
-                return
-            self.total_size = self.size
-            return self._calc_size(node, total_size)
 
 class Filesystem():
 
@@ -82,6 +77,14 @@ if __name__ == '__main__':
         else:
             pass
 
+def calc_sizes(children):
+    if len(children) == 0:
+        return
+    else:
+        for child in children.values():
+            child.parent.total_size += child.size
+            return calc_sizes(child.children)
 
+calc_sizes(fs.root.children)
 
 pass
