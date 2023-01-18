@@ -77,14 +77,13 @@ if __name__ == '__main__':
         else:
             pass
 
-def calc_sizes(children):
-    if len(children) == 0:
-        return
-    else:
+def print_sizes(node: Node, children: dict[str, Node], total_size: int) -> None:
+    if node != None:
         for child in children.values():
-            child.parent.total_size += child.size
-            return calc_sizes(child.children)
+            return print_sizes(child, child.children, child.size + total_size)
 
-calc_sizes(fs.root.children)
+
+
+print_sizes(fs.root, fs.root.children, fs.root.total_size)
 
 pass
