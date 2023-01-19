@@ -43,10 +43,30 @@ class Filesystem():
     def cd(self, name) -> None:
         self.curr_dir = self.curr_dir.children[name]
 
+def calc_sizes(node: Node) -> None:
+    for child in node.children.values():
+        calc_sizes(child)
+    if node.parent is not None:
+            node.parent.total_size += node.size + node.total_size
+    else:
+            node.total_size += node.size
+
+    print(f'{node.name}: {node.size}, {node.total_size}')
+
+def print_size(node):
+    global sizes
+    for child in node.children.values():
+        print_size(child)
+    if node.size + node.total_size <= 100000:
+        sizes.append(node.size + node.total_size)
+
+
 if __name__ == '__main__':
 
-    lines = get_input('test7.txt')
+    lines = get_input('day7.txt')
     fs = Filesystem()
+
+    sizes = []
 
     cd = re.compile(r'\$\s+cd\s+(.*)')
     dir = re.compile(r'dir\s+(.*)')
@@ -77,13 +97,7 @@ if __name__ == '__main__':
         else:
             pass
 
-def print_sizes(node: Node, children: dict[str, Node], total_size: int) -> None:
-    if node != None:
-        for child in children.values():
-            return print_sizes(child, child.children, child.size + total_size)
-
-
-
-print_sizes(fs.root, fs.root.children, fs.root.total_size)
-
-pass
+    calc_sizes(fs.root)
+    print_size(fs.root)
+    print(sum(sizes))
+    pass
