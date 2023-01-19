@@ -1,12 +1,15 @@
-def get_input(filename):
-    with open(filename, 'r') as fh:
-        lines = fh.readlines()
-        return [line.strip() for line in lines]
+import os
+
+filedir = os.path.dirname(__file__)
+day = filedir[-2:]
+infile = filedir + f'/day{day}.txt'
+testfile = filedir + f'/test{day}.txt'
+lines = [x.strip() for x in open(infile)]
 
 
 
 if __name__ == '__main__':
-    lines = get_input('day1.txt')
+    
 
     out = []
     x = 0
@@ -22,4 +25,5 @@ if __name__ == '__main__':
     s = sorted(out, reverse=True)
     top = s[0]
     top3 = sum(s[0:3])
-    pass
+    print(top)
+    print(top3)

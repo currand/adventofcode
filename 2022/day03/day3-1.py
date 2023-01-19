@@ -1,6 +1,10 @@
-from utils.utils import get_input
+import os
 
-lines = get_input('day3.txt')
+filedir = os.path.dirname(__file__)
+day = filedir[-2:]
+infile = filedir + f'/day{day}.txt'
+testfile = filedir + f'/test{day}.txt'
+lines = [x.strip() for x in open(infile)]
 
 alph = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 p = dict(zip(alph, range(1,53)))

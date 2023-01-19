@@ -1,8 +1,12 @@
 from enum import Enum
-from utils.utils import get_input
-from anytree import Node, RenderTree
+import os
 
-lines = get_input('day2.txt')
+filedir = os.path.dirname(__file__)
+day = filedir[-2:]
+infile = filedir + f'/day{day}.txt'
+testfile = filedir + f'/test{day}.txt'
+lines = [x.strip() for x in open(infile)]
+
 games = [tuple(x.split(' ')) for x in lines]
 
 

@@ -1,7 +1,6 @@
 from __future__ import annotations
 import re
-from utils.utils import get_input
-from dataclasses import dataclass
+import os
 
 
 class Node():
@@ -62,28 +61,23 @@ def calc_sizes(node: Node) -> None:
 
     print(f'{node.name}: {node.size}, {node.total_size}')
 
-def print_size_p1(node):
-    global sizes_p1
+def print_size(node):
+    global sizes
     for child in node.children.values():
-        print_size_p1(child)
+        print_size(child)
     if node.size + node.total_size <= 100000:
-        sizes_p1.append(node.size + node.total_size)
+        sizes.append(node.size + node.total_size)
 
-def print_size_p2(node):
-    # The part 2 solution only counts directories above 40000000 minus the size of '/'
-    global sizes_p2
-    for child in node.children.values():
-        print_size_p2(child)
-    if node.size + node.total_size >= fs.root.total_size - 40000000:
-        sizes_p2.append(node.size + node.total_size)
 
 if __name__ == '__main__':
-
-    lines = get_input('day7.txt')
+    filedir = os.path.dirname(__file__)
+    day = filedir[-2:]
+    infile = filedir + f'/day{day}.txt'
+    testfile = filedir + f'/test{day}.txt'
+    lines = [x.strip() for x in open(infile)]
     fs = Filesystem()
 
-    sizes_p1 = []
-    sizes_p2 = []
+    sizes = []
 
     cd = re.compile(r'\$\s+cd\s+(.*)')
     dir = re.compile(r'dir\s+(.*)')
@@ -115,7 +109,5 @@ if __name__ == '__main__':
             pass
 
     calc_sizes(fs.root)
-    print_size_p1(fs.root)
-    print_size_p2(fs.root)
-    print('p1:', sum(sizes_p1))
-    print('p2:', min(sizes_p2))
+    print_size(fs.root)
+    print(sum(sizes))

@@ -1,8 +1,12 @@
 import re
+import os
 
-from utils.utils import get_input
+filedir = os.path.dirname(__file__)
+day = filedir[-2:]
+infile = filedir + f'/day{day}.txt'
+testfile = filedir + f'/test{day}.txt'
+lines = [x for x in open(infile)]
 
-lines = get_input('day5.txt', no_strip=True)
 stacks = []
 for i,line in enumerate(lines):
     if not line.startswith(' 1'):
