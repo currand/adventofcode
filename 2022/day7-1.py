@@ -44,6 +44,15 @@ class Filesystem():
         self.curr_dir = self.curr_dir.children[name]
 
 def calc_sizes(node: Node) -> None:
+    """ 
+    Recurse backwards through the nodes. For each child add a recursion step
+    once you've reached the bottom, do the stuff. To recurse top to bottom, do the stuff,
+    THEN do the recursion.
+
+    This function adds the file sizes to their directory size and then sets the parent.
+    Finally, add the '/' directory size to the total.
+
+    """
     for child in node.children.values():
         calc_sizes(child)
     if node.parent is not None:
