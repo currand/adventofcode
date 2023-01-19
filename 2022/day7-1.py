@@ -100,4 +100,3 @@ if __name__ == '__main__':
     calc_sizes(fs.root)
     print_size(fs.root)
     print(sum(sizes))
-    pass
