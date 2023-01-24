@@ -4,17 +4,17 @@ from typing import Generator, List, Union, Iterator
 
 class Grid():
     def __init__(self, arr: list[list[int]]) -> None:
-        self.w = len(arr[0]) - 1
-        self.h = len(arr) - 1
+        self.w = len(arr[0])
+        self.h = len(arr)
         self.grid = arr
     
-    def __repr__(self) -> str | None:
+    def __repr__(self) -> str:
         pp(self.grid)
 
     def set_coord(self, r: int, c: int, data: int) -> None:
         self.grid[r][c] = data
 
-    def get_coord(self, r: int, c: int) -> int | None:
+    def get_coord(self, r: int, c: int) -> int:
         return self.grid[r][c]
 
     def get_column(self, c: int) -> list[tuple[int,int,int]]:
@@ -41,10 +41,10 @@ class Grid():
             Iterable: _description_
         """
         coords: list[tuple[int, int]] =  []
-        coords += [(0, c) for c in range(1, self.w+1)]
-        coords += [(r, self.w) for r in range(1, self.h+1)]
-        coords += [(self.h, c) for c in range (self.w, -1, -1)]
-        coords += [(0, r) for r in range (self.h, -1, -1)]
+        coords += [(0, c) for c in range(1, self.w)]
+        coords += [(r, self.w-1) for r in range(1, self.h)]
+        coords += [(self.h-1, c) for c in range (self.w-1, -1, -1)]
+        coords += [(0, r) for r in range (self.h-1, -1, -1)]
 
         if remove_corners:
             coords = [x for x in coords if x not in self.get_corners()]
@@ -53,16 +53,16 @@ class Grid():
             yield item
 
     def get_corners(self) -> list[tuple[int, int]]:
-        return [(0,0), (0, self.w), (self.h, self.w), (self.h, 0)]
+        return [(0,0), (0, self.w-1), (self.h-1, self.w-1), (self.h-1, 0)]
 
 def side(grid, coord: tuple[int, int]) -> str | None:
     if coord[0] == 0:
         return "TOP"
-    elif coord[0] == grid.h:
+    elif coord[0] == grid.h-1:
         return "BOTTOM"
     elif coord[1] == 0:
         return "LEFT"
-    elif coord[1] == grid.w:
+    elif coord[1] == grid.w-1:
         return "RIGHT"
     else:
         return None
@@ -82,13 +82,13 @@ if __name__ == '__main__':
     day = filedir[-2:]
     infile = filedir + f'/day{day}.txt'
     testfile = filedir + f'/test{day}.txt'
-    lines = [x.strip() for x in open(infile)]
+    testfile2 = filedir + f'/test.txt'
+    lines = [x.strip() for x in open(testfile)]
 
     forrest = [[int(j) for j in i] for i in [list(line) for line in lines]]
     grid = Grid(forrest)
 
     trees = []
-    outside = 4
     for tree in grid.circle_grid(remove_corners=True):
         ''' 
         1. start from top left
@@ -99,8 +99,7 @@ if __name__ == '__main__':
             3. If side() = BOTTOM, get column, count trees taller than item -1 in reverse order
             4. If side() = LEFT, get row, count trees taller than item 0
         '''
-
-        outside += 1        
+        pass
         if side(grid, tree) == 'TOP':
             column = grid.get_column(tree[1])
             trees += count_trees(column)
@@ -114,6 +113,7 @@ if __name__ == '__main__':
             row = grid.get_row(tree[0])
             trees  += count_trees(row)
     
-    
-    print('trees: {}, outside: {}, {}'.format(len(set(trees)), outside, len(set(trees)) + outside))
+    outside = (2 * grid.w) + 2 * (grid.h - 2)
+    final_trees = len(set(trees))
+    print('trees: {}, outside: {}, {}'.format(final_trees, outside, final_trees + outside))
     pass
