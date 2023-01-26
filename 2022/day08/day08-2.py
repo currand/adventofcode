@@ -55,6 +55,19 @@ class Grid():
     def get_corners(self) -> list[tuple[int, int]]:
         return [(0,0), (0, self.w-1), (self.h-1, self.w-1), (self.h-1, 0)]
 
+    def all_coords(self) -> Generator:
+        coords = []
+        for r in range(grid.h):
+            if r not in [0,grid.h-1]:
+                for c in range(0,grid.w):
+                    if c not in [0,grid.w-1]:
+                        coords.append((r, c, self.grid[r][c]))
+        
+        for item in coords:
+            yield item
+
+        
+
 def side(grid, coord: tuple[int, int]) -> str | None:
     if coord[0] == 0:
         return "TOP"
@@ -69,14 +82,23 @@ def side(grid, coord: tuple[int, int]) -> str | None:
         return None
 
 def count_trees(arr: list[tuple[int, int, int]]) -> list[int]:
-    tall_trees = []
-    curr_min = arr.pop(0)[2]
-    for coord in arr[:-1]:
-        if coord[2] > curr_min:
-            tall_trees.append((coord[0], coord[1]))
-            curr_min = coord[2]
+    short_trees = []
+    try:
+        curr_min = arr.pop(0)[2]
+        if arr[0][2] >= curr_min:
+            return [(arr[0][0], arr[0][1])]
+
+        for coord in arr:
+            if coord[2] < curr_min:
+                short_trees.append(coord)
+            else:
+                short_trees.append(coord)
+                break
+
+    except IndexError:
+        short_trees = arr
     
-    return tall_trees
+    return short_trees
 
 if __name__ == '__main__':
     filedir = os.path.dirname(__file__)
@@ -89,32 +111,32 @@ if __name__ == '__main__':
     forrest = [[int(j) for j in i] for i in [list(line) for line in lines]]
     grid = Grid(forrest)
 
-    trees = []
-    for tree in grid.circle_grid(remove_corners=True):
+    high_score = 0
+    for tree in grid.all_coords():
         ''' 
         1. start from top left
-        2. move clockwise using circle_crid()
+        2. move through all coords except the edges
         3. at each step
-            1. If side() = TOP, get column, count trees taller than item 0
-            2. If side() = RIGHT, get row, count trees (in reverse order) taller than item -1
-            3. If side() = BOTTOM, get column, count trees taller than item -1 in reverse order
-            4. If side() = LEFT, get row, count trees taller than item 0
+            1. look up
+            2. count trees shorter than current tree
+            3. repeat 1.1, 1.2 for each direction
         '''
+
+        
+        #  Look up
+        column = grid.get_column(tree[1])[tree[0]::-1]
+        u = count_trees(column)
+        column = grid.get_column(tree[1])[tree[0]:]
+        d = count_trees(column)
+        row = grid.get_row(tree[0])[tree[1]::-1]
+        l = count_trees(row)
+        row = grid.get_row(tree[0])[tree[1]:]
+        r = count_trees(row)
+        total = len(u) * len(d) * len(l) * len(r)
+
+        if total > high_score:
+            high_score = total
+
         pass
-        if side(grid, tree) == 'TOP':
-            column = grid.get_column(tree[1])
-            trees += count_trees(column)
-        elif side(grid, tree) == 'RIGHT':
-            row = grid.get_row(tree[0])
-            trees  += count_trees(row[::-1])
-        elif side(grid, tree) == 'BOTTOM':
-            column = grid.get_column(tree[1])
-            trees  += count_trees(column[::-1])
-        elif side(grid, tree) == 'LEFT':
-            row = grid.get_row(tree[0])
-            trees  += count_trees(row)
-    
-    outside = (2 * grid.w) + 2 * (grid.h - 2)
-    final_trees = len(set(trees))
-    print('trees: {}, outside: {}, {}'.format(final_trees, outside, final_trees + outside))
-    pass
+
+    print(high_score)
