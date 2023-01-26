@@ -44,7 +44,7 @@ class Grid():
         coords += [(0, c) for c in range(1, self.w)]
         coords += [(r, self.w-1) for r in range(1, self.h)]
         coords += [(self.h-1, c) for c in range (self.w-1, -1, -1)]
-        coords += [(0, r) for r in range (self.h-1, -1, -1)]
+        coords += [(r, 0) for r in range (self.h-1, -1, -1)]
 
         if remove_corners:
             coords = [x for x in coords if x not in self.get_corners()]
@@ -58,12 +58,13 @@ class Grid():
 def side(grid, coord: tuple[int, int]) -> str | None:
     if coord[0] == 0:
         return "TOP"
-    elif coord[0] == grid.h-1:
+    elif coord[1] == grid.w-1:
+        return "RIGHT"
+    elif coord[0] == grid.h-1 and coord[0] > 0:
         return "BOTTOM"
     elif coord[1] == 0:
         return "LEFT"
-    elif coord[1] == grid.w-1:
-        return "RIGHT"
+
     else:
         return None
 
@@ -83,7 +84,7 @@ if __name__ == '__main__':
     infile = filedir + f'/day{day}.txt'
     testfile = filedir + f'/test{day}.txt'
     testfile2 = filedir + f'/test.txt'
-    lines = [x.strip() for x in open(testfile)]
+    lines = [x.strip() for x in open(infile)]
 
     forrest = [[int(j) for j in i] for i in [list(line) for line in lines]]
     grid = Grid(forrest)
