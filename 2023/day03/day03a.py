@@ -1,6 +1,6 @@
 import os
 
-TEST = True
+TEST = False
 
 filedir = os.path.dirname(__file__)
 part = __file__.split('.', maxsplit=1)[0][-1]
@@ -25,28 +25,53 @@ def is_symbol(char: str) -> bool:
     else:
         return True
 
-def symbol_near(grid: list[list[str]], positions: list[tuple[int, int]]) -> bool:
+def symbol_near(positions: list[tuple[int, int]]) -> bool:
     try:
         for pos in positions:
-            for x in range(-1,2):
-                for y in range(-1,2):
-                    if (x,y) != (0,0) and pos[0]+x >=0 and pos[1]+y >= 0:
-                        symbol = is_symbol(grid[pos[0]+x][pos[1]+y])
-                        print(f'{grid[pos[0]+x][pos[1]+y]}: {symbol}')
+            for x_add in range(-1,2):
+                for y_add in range(-1,2):
+                    if (
+                        (x_add,y_add) != (0,0)
+                        and (pos[1]+y_add >=0 and pos[0]+x_add >= 0)
+                        and (pos[1]+y_add <= len(grid[pos[1]])-1)
+                        and (pos[0]+x_add <= len(grid[pos[0]])-1)
+                        and is_symbol(grid[pos[1]+y_add][pos[0]+x_add])
+                    ):
+                        return True
+
     except IndexError:
         pass
+    
+    return False
 
+def get_digits(pos: tuple[int,int]):
+    positions = [pos]
+    for x_add in range(1, len(grid[pos[1]])-pos[0]):
+        if grid[pos[1]][pos[0]+x_add].isdigit():
+            positions.append((pos[0]+x_add, pos[1]))
+        else:
+            break
 
-
+    return positions
 
 if __name__ == '__main__':
     grid = build_grid(lines)
+    parts = []
     for y, line in enumerate(grid):
-        for x, char in enumerate(line):
-            if char != '.':
-                if char.isdigit():
-                    symbol_near(grid, [(x,y)])
+        X = 0
+        if y == 139:
+            pass
+        while X <= len(line)-1:
+            if line[X] != '.':
+                if line[X].isdigit():
+                    digits = get_digits((X,y))
+                    if symbol_near(digits):
+                        num = int(''.join([grid[x[1]][x[0]] for x in digits]))
+                        parts.append(num)
+                    X = digits[-1][0] + 1
+                else:
+                    X += 1
+            else:
+                X += 1
 
-
-    
-    pass
+    print(sum(parts))
