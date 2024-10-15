@@ -1,6 +1,7 @@
 import os
+from functools import reduce
 
-TEST = False
+TEST = True
 
 filedir = os.path.dirname(__file__)
 part = __file__.split('.', maxsplit=1)[0][-1]
@@ -28,6 +29,7 @@ def number_near(pos: tuple[int, int]) -> list[tuple[int,int]] | None:
                 and grid[pos[1]+y_add][pos[0]+x_add].isdigit()
             ):
                 numbers.append((pos[0]+x_add, pos[1]+y_add))
+                break
 
     if len(numbers) > 0:
         return numbers
@@ -37,25 +39,31 @@ def number_near(pos: tuple[int, int]) -> list[tuple[int,int]] | None:
 def get_digits(coords: list[tuple[int,int]]):
     final_digits = []
     for coord in coords:
-        Y = coord[1]
-        X = coord[0]
+        y = coord[1]
+        x = coord[0] - 1
         min_x = 0
-        max_x = len(grid[Y]) - 1
-        curr_digits = [grid[Y][X]]
+        max_x = len(grid[y]) - 1
+        curr_digits = [grid[y][x]]
         # Look backward until a non digit
-        while X >= min_x:
-            if grid[Y][X-1].isdigit():
-                curr_digits.insert(0, grid[Y][X-1])
-            X -= 1
+        while x >= min_x:
+            if grid[y][x].isdigit():
+                curr_digits.insert(0, grid[y][x])
+            else:
+                break
+            x -= 1
         
-        X = coord[0]
-        while X <= max_x:
-            if grid[Y][X-1].isdigit():
-                curr_digits.append(grid[Y][X-1])
-            X += 1
+        x = coord[0] + 1
+        while x <= max_x:
+            if grid[y][x].isdigit():
+                curr_digits.append(grid[y][x])
+            else:
+                break
+            x += 1
+        
+        final_digits.append(curr_digits)
 
 
-    return positions
+    return final_digits
 
 if __name__ == '__main__':
     grid = build_grid(lines)
@@ -68,7 +76,10 @@ if __name__ == '__main__':
             if line[X] == '*':
                 if positions := number_near((X,y)):
                     digits = get_digits(positions)
-            else:
-                X += 1
+                    if len(digits) == 2:
+                        parts.append(reduce(lambda x, y: int(''.join(x)) * int(''.join(y)), digits))
+                    else:
+                        pass
+            X += 1
 
     print(sum(parts))
