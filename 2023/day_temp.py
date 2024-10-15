@@ -10,5 +10,7 @@ if TEST:
 else:
     infile = filedir + f'/day{day}{part}.txt'
 
+lines = [x.strip() for x in open(infile, 'r')]
+
 if __name__ == '__main__':
     pass
