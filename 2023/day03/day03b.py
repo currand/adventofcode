@@ -1,7 +1,7 @@
 import os
 from functools import reduce
 
-TEST = True
+TEST = False
 
 filedir = os.path.dirname(__file__)
 part = __file__.split('.', maxsplit=1)[0][-1]
@@ -29,7 +29,7 @@ def number_near(pos: tuple[int, int]) -> list[tuple[int,int]] | None:
                 and grid[pos[1]+y_add][pos[0]+x_add].isdigit()
             ):
                 numbers.append((pos[0]+x_add, pos[1]+y_add))
-                break
+                continue
 
     if len(numbers) > 0:
         return numbers
@@ -38,14 +38,19 @@ def number_near(pos: tuple[int, int]) -> list[tuple[int,int]] | None:
 
 def get_digits(coords: list[tuple[int,int]]):
     final_digits = []
+    coords_seen = []
     for coord in coords:
+        if coord in coords_seen:
+            continue
+
         y = coord[1]
         x = coord[0] - 1
         min_x = 0
-        max_x = len(grid[y]) - 1
-        curr_digits = [grid[y][x]]
+        max_x = len(grid[y])-1
+        curr_digits = [grid[y][x+1]]
         # Look backward until a non digit
         while x >= min_x:
+            coords_seen.append((x,y))
             if grid[y][x].isdigit():
                 curr_digits.insert(0, grid[y][x])
             else:
@@ -54,6 +59,7 @@ def get_digits(coords: list[tuple[int,int]]):
         
         x = coord[0] + 1
         while x <= max_x:
+            coords_seen.append((x,y))
             if grid[y][x].isdigit():
                 curr_digits.append(grid[y][x])
             else:
@@ -62,7 +68,6 @@ def get_digits(coords: list[tuple[int,int]]):
         
         final_digits.append(curr_digits)
 
-
     return final_digits
 
 if __name__ == '__main__':
@@ -70,7 +75,7 @@ if __name__ == '__main__':
     parts = []
     for y, line in enumerate(grid):
         X = 0
-        if y == 139:
+        if y == 5:
             pass
         while X <= len(line)-1:
             if line[X] == '*':
