@@ -21,9 +21,7 @@ mkdir "day$X"
 # Create the files inside the directory
 cp day_temp.py "day$X/day${X}a.py"
 cp day_temp.py "day$X/day${X}b.py"
-touch "day$X/day${X}a.txt"
-touch "day$X/test${X}a.txt"
-touch "day$X/day${X}b.txt"
-touch "day$X/test${X}b.txt"
+touch "day$X/day${X}.txt"
+touch "day$X/test${X}.txt"
 
 echo "Directory and files created successfully."

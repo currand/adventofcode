@@ -38,7 +38,7 @@ def number_near(pos: tuple[int, int]) -> list[tuple[int,int]] | None:
 
 def get_digits(coords: list[tuple[int,int]]):
     final_digits = []
-    coords_seen = []
+    coords_seen = set()
     for coord in coords:
         if coord in coords_seen:
             continue
@@ -50,7 +50,7 @@ def get_digits(coords: list[tuple[int,int]]):
         curr_digits = [grid[y][x+1]]
         # Look backward until a non digit
         while x >= min_x:
-            coords_seen.append((x,y))
+            coords_seen.add((x,y))
             if grid[y][x].isdigit():
                 curr_digits.insert(0, grid[y][x])
             else:
@@ -59,7 +59,7 @@ def get_digits(coords: list[tuple[int,int]]):
         
         x = coord[0] + 1
         while x <= max_x:
-            coords_seen.append((x,y))
+            coords_seen.add((x,y))
             if grid[y][x].isdigit():
                 curr_digits.append(grid[y][x])
             else:
