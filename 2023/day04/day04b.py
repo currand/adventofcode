@@ -2,7 +2,7 @@ import os
 from typing import Union
 from collections import Counter, OrderedDict
 
-TEST = True
+TEST = False
 
 filedir = os.path.dirname(__file__)
 day = filedir[-2:]
@@ -24,38 +24,21 @@ def parse_card(card: str) -> dict:
     output['intersect'] = output['winners'].intersection(output['nums_have'])
 
     return output
-
-# def calc_winners(queue: list, cards: dict, max_card: int, card_count: int = 0) -> Union[list, bool]:
-#     ''' 
-#     Recursive
-
-#     base case - there are no cards left (max_card)
-
-#     1. Get the number of wins for the current card
-#     2. for each of those cards, repeat step one
-
-#     '''
-#     if len(queue) == 0:
-#         return card_count
-#     else:
-#         card = queue.pop(0)
-#         num_winners = len(cards[card]['intersect'])
-#         card_count += num_winners
-#         new_cards = [n for n in range(card+1, card + num_winners+1) if n <= max_card]
-#         queue += new_cards
-#         queue = sorted(queue)
-#         return calc_winners(queue, cards, max_card, card_count)
         
     
 def calc_winners(cards):
-    winners = []
-    for k in cards.keys():
-        winners *= [x for x in range(k + 1, k + len(cards[k]['intersect']) + 1) if x <= max(cards.keys())]
-        pass
+    cards_won = list(cards.keys())
+    queue: list[int] = [x for x in cards.keys()]
+    while queue:
+        winners = []
+        card = queue.pop(0)
+        winners = [x for x in range(card + 1, card + len(cards[card]['intersect']) + 1) if x <= max(cards.keys())]
+        queue += winners
+        cards_won += winners
+    return len(cards_won)
 
 cards = {x['name']: x for x in [parse_card(line) for line in lines]}
 
 card_count = calc_winners(cards)
 
 print(f"{card_count=}")
-
