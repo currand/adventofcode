@@ -1,5 +1,6 @@
 import os
 import re
+from collections import OrderedDict
 
 TEST = True
 
@@ -16,12 +17,12 @@ REGEX_TITLE = re.compile(r'^(\w+)-to-(\w+)\smap:$')
 REGEX_MAP = re.compile(r'^(\d+)\s(\d+)\s(\d+)$')
 
 def parse_input(lines):
-    seed_map = {}
+    seed_map = OrderedDict()
     for line in lines:
         if line.startswith('seeds'):
-            seed_map['seeds'] = [int(x) for x in line.strip('seeds: ').split()]
+            seeds = [int(x) for x in line.strip('seeds: ').split()]
         elif len(match:= re.split(REGEX_TITLE, line)) > 1:
-            title = match[1] + '-' + match[2]
+            title = match[1] + '-to-' + match[2]
             seed_map[title] = {
                 'source': match[2],
                 'dest': match[1],
@@ -33,21 +34,28 @@ def parse_input(lines):
             dest_range = (nums[0], nums[0] + nums[2] - 1)
             seed_map[title]['map'].append([source_range, dest_range])
     
-    return seed_map
+    return seeds, seed_map
 
-def map_seed(map, num):
-    output = []
-    if is_between(num, map[0]):
-        offset = map[1][0] - map[0][0]
-        return num + offset
-    elif num < 
+def map_seed(seed, map):
 
+    if seed in range(map[0][0], map[0][1] + 1):
+        return seed + map[1][0] - map[0][0]
+    else:
+        return seed
 
+def process_seed(seed, seed_map):
+    current_mapping = seed
+    for k in seed_map.keys():
+        for map in seed_map[k]['map']:
+            current_mapping = map_seed(current_mapping, map)
+    
+    return current_mapping
 
-def is_between(num, num_range):
+def __is_between(num: int, num_range: tuple) -> bool:
     return num >= num_range[0] and num <= num_range[1]
 
 if __name__ == '__main__':
-    seed_map = parse_input(lines)
-    out = map_seed(seed_map['seed-soil']['map'][1], 50)
+    seeds, seed_map = parse_input(lines)
+    for seed in seeds:
+        print(process_seed(seeds[1], seed_map))
     pass
