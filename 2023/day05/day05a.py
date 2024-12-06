@@ -38,7 +38,9 @@ def parse_input(lines):
 
 def map_seed(seed, map):
 
-    if seed in range(map[0][0], map[0][1] + 1):
+    if seed < map[0][0]:
+        return seed
+    elif __is_between(seed, map[0]):
         return seed + map[1][0] - map[0][0]
     else:
         return seed
