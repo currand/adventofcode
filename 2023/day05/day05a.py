@@ -1,8 +1,9 @@
 import os
 import re
+from icecream import ic
 from collections import OrderedDict
 
-TEST = True
+TEST = False
 
 filedir = os.path.dirname(__file__)
 day = filedir[-2:]
@@ -36,28 +37,21 @@ def parse_input(lines):
     
     return seeds, seed_map
 
-def map_seed(seed, map):
-
-    if seed < map[0][0]:
-        return seed
-    elif __is_between(seed, map[0]):
-        return seed + map[1][0] - map[0][0]
-    else:
-        return seed
-
 def process_seed(seed, seed_map):
     current_mapping = seed
     for k in seed_map.keys():
         for map in seed_map[k]['map']:
-            current_mapping = map_seed(current_mapping, map)
-    
+            offset = map[0][0] - map[1][0]
+            if current_mapping in range(map[0][0], map[0][1] + 1):
+                current_mapping = current_mapping - offset
+                break
     return current_mapping
 
-def __is_between(num: int, num_range: tuple) -> bool:
-    return num >= num_range[0] and num <= num_range[1]
-
 if __name__ == '__main__':
+    mappings = []
     seeds, seed_map = parse_input(lines)
     for seed in seeds:
-        print(process_seed(seeds[1], seed_map))
-    pass
+        mappings.append(process_seed(seed, seed_map))
+        ic("Finished a seed")
+    
+    ic(min(mappings))
